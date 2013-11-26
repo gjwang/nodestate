@@ -143,8 +143,8 @@ class NodeState(object):
         conn_type = 'tcp'
         tcp_conns = 0
         #udp_conns = 0
-
-        for p in psutil.process_iter():
+	list=psutil.process_iter()
+        for p in list:
             name = '?'
             try:
                 name = p.name
@@ -161,7 +161,7 @@ class NodeState(object):
                 for c in cons:
                     if conn_type == proto_map[(c.family, c.type)] and c.status == 'ESTABLISHED':
                         tcp_conns = tcp_conns + 1
-
+		break
         #print "psname: %s, tcpconns: %s" % (self.psname, tcp_conns)
         return tcp_conns
  
