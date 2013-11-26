@@ -30,7 +30,7 @@ class NodeStateXML(object):
                  #CPUAverageRatio=0, CPUPeakRatio=0, memAverageRatio=0, memPeakRatio=0, 
                  #northboundIdleBW=0, northboundConcurrencies=0, southboundIdleBW=0, southboundConcurriencies=0,
                  #idleDiskSpace=0, IOWBw=0, IORBw=0,                  
-                 ifname='eth0', port = '80', hostname = None, xmlUrl=None, 
+                 ifname='eth0', port = '80',video_port='80', hostname = None, xmlUrl=None, 
                 ):
 
         self.__logger = logging.getLogger(self.__class__.__name__)
@@ -38,7 +38,7 @@ class NodeStateXML(object):
         self.filename = filename
         self.posturl = posturl
         self.wwwroot = wwwroot
-
+       
         self.ifname = ifname #netcard name
         if ip is None:
             ip = get_ip_address(self.ifname)
@@ -48,7 +48,8 @@ class NodeStateXML(object):
             #TODO: if nodeID contains ip, skip next
             self.nodeID = '_'.join([nodeID, self.ip])
             
-        self.port = port        
+        self.port = port 
+	self.video_port=video_port       
         if xmlUrl is not None:
             self.xmlUrl = xmlUrl
         elif hostname is not None:
@@ -139,7 +140,7 @@ class NodeStateXML(object):
         self.nodeLoad.set("timeStamp", timeStamp)
 
     def setHostIP(self):
-	self.nodeLoad.set("IP", self.ip)
+	self.nodeLoad.set("IP", self.ip+":"+self.video_port)
 
     def setWeight(self,weight):
 	self.nodeLoad.set("Weight",weight)
