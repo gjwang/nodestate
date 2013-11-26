@@ -5,29 +5,20 @@ Created on 2013年10月29日
 
 @author: gjwang
 '''
-#region's name for short for nodeID
+
 nodeID = 'jx_ja'
-#post interval
-interval = 10
-#mountpoint for main disk
+interval = 5
 mountpoint = '/data'
 device = None #device='/dev/sda9'
 netcard = 'eth0'
-#port for nginx in local host
-port = '80'
-#publishing server's name
-psname = 'ngnix'
-#the host's url for posting xml string
-postUrl = 'http://xxx:port/lua'
-#local xml file's path
-wwwroot = '/data/ysten'
-#xml file for posting
+video_server_port='8080'
+xmlfile_port= '8088'
+psname = 'nginx'
+postUrl = 'http://223.82.137.218:8088/lua'
+#postUrl='http://61.233.192.135:8089/lua'
+wwwroot = '/data/project/xmlfile'
 xmlfilename="NodeState.xml"
-#program's log 
 logfilename = "log/nodestate.log"
-#所有主机整体配置的综合系数
 weight=1
-#网卡最大带宽
 bandwidth_max=1024*1024*1024/8
-#主机最多可以承载多少用户数
 conn_max=1000
