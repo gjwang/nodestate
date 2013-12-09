@@ -34,7 +34,7 @@ def main():
     logger.addHandler(log_FileHandler)    
 
     ndstxml = NodeStateXML(filename=xmlfilename, nodeID=nodeID, wwwroot=wwwroot, posturl=postUrl, port=xmlfile_port,video_port=video_server_port)
-    ndst = NodeState(interval=interval, mountpoint=mountpoint, device=device, netcard=netcard,bandwidth_max=bandwidth_max,conn_max=conn_max, psname=psname)
+    ndst = NodeState(interval=interval, mountpoint=mountpoint, device=device, netcard=netcard,bandwidth_max=bandwidth_max,conn_max=conn_max, psname=nginx_status,status_port=nginx_status_port)
             
     ndst.set_interval(interval=1)
     while 1:    

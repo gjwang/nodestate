@@ -16,7 +16,7 @@ import os
 import time
 import logging
 import logging.handlers
-
+import httplib
 import psutil
 from psutil._compat import print_
 
@@ -54,7 +54,7 @@ def bytes2human(n):
 
 class NodeState(object):
     def __init__(self, interval = 1, mountpoint='/data', device = None, netcard = 'eth0', 
-                 bandwidth_max=1024*1024*1024/8, conn_max = 1000, psname = None):
+                 bandwidth_max=1024*1024*1024/8, conn_max = 1000, psname = None,status_port=None):
         self.__logger = logging.getLogger(self.__class__.__name__)
 
         if interval == 0:
@@ -69,7 +69,7 @@ class NodeState(object):
         self.device = device
         self.netcard = netcard
         self.psname = psname
-
+	self.status_port=status_port
         self.disks_read = 0 
         self.disks_write = 0
         self.netsent = 0
@@ -136,35 +136,23 @@ class NodeState(object):
     #psname is None, return the total tcp connections
     #return the psname's tcp connections
     def get_connections(self):
-        #templ = "%-5s %-22s %-22s %-13s %-6s %s"
-        #print_(templ % ("Proto", "Local addr", "Remote addr", "Status", "PID",
-        #                "Program name"))
-
-        conn_type = 'tcp'
-        tcp_conns = 0
-        #udp_conns = 0
-	list=psutil.process_iter()
-        for p in list:
-            name = '?'
-            try:
-                name = p.name
-                if self.psname is not None and self.psname != name:
-                    continue
-
-                cons = p.get_connections(kind='inet')
-            except psutil.AccessDenied:
-                #print_(templ % (AD, AD, AD, AD, p.pid, name))
-                pass
-            except psutil.NoSuchProcess:
-                continue
-            else:
-                for c in cons:
-                    if conn_type == proto_map[(c.family, c.type)] and c.status == 'ESTABLISHED':
-                        tcp_conns = tcp_conns + 1
-		break
-        #print "psname: %s, tcpconns: %s" % (self.psname, tcp_conns)
-        return tcp_conns
- 
+        uri = self.psname
+	port= self.status_port
+	nginx_conns=0
+	try:
+    	    httpClient = httplib.HTTPConnection('127.0.0.1', port, timeout=30)
+    	    httpClient.request('GET', uri)
+            response = httpClient.getresponse()
+            if response.status==200:
+                resp=response.read()
+                nginx_conns=resp[resp.find(':')+1:resp.find('\n')].strip()
+        except Exception, e:
+            print e
+	finally:
+    	    if httpClient:
+                httpClient.close()
+        return nginx_conns
+	
 
     def get_io(self):        
         def refresh_netinfo(tot_before, tot_after, pnic_before, pnic_after):        
