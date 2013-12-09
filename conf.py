@@ -17,8 +17,10 @@ netcard = 'eth0'
 video_server_port='8080'
 #port for getting xml file from nginx 
 xmlfile_port = '80'
-#publishing server's name
-psname = 'ngnix'
+#nginx 的对于获取nginx连接数的配置路径
+nginx_status = '/nginx_status'
+#获取nginx配置路径的端口
+nginx_status_port='8089'
 #the host's url for posting xml string
 postUrl = 'http://xxx:port/lua'
 #local xml file's path
